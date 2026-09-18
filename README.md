@@ -48,6 +48,6 @@ scripts under `/home/dz288/rms/` and `/home/dz288/rms/rms_JamesKnight/`.
 The full research -- file/line citations against the engine source,
 verbatim doc excerpts, quantitative directive-frequency tables across the
 production-script survey, and a reconciliation of every place the three
-sources disagreed -- lives in the `ycga_rms_creater` project's `research/`
+sources disagreed -- lives in the `ycga_rms_creator` project's `research/`
 directory, kept separately since it's forensic/derivation detail rather
 than something this skill needs at use-time.

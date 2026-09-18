@@ -7,7 +7,7 @@ occasionally inconsistent) Sphinx docs at rms.readthedocs.io. Where the docs
 and the engine source disagree, this file follows the engine source — see
 `engine_quirks.md` for the specific disagreements found. This is a portable
 reference for authoring correct scripts; it doesn't cite line numbers (that
-level of detail, if ever needed again, lives in the `ycga_rms_creater`
+level of detail, if ever needed again, lives in the `ycga_rms_creator`
 project's `research/01_engine_grammar.md`).
 
 ## 1. Top-level file structure, in strict order

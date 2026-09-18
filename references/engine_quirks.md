@@ -5,7 +5,7 @@ Everything here was confirmed by reading the installed engine source at
 the official docs (rms.readthedocs.io) say something different, this file
 notes it — **trust the engine source**, since that's what actually runs on
 McCleary. Full forensic detail (file/function/line citations) is preserved
-in the `ycga_rms_creater` project's `research/01_engine_grammar.md` and
+in the `ycga_rms_creator` project's `research/01_engine_grammar.md` and
 `research/00_reconciliation_notes.md` if this ever needs re-verifying
 against a different RMS build.
 

@@ -160,6 +160,6 @@ at `/gpfs/gibbs/pi/ycga/mane/ycga_bioinfo/soft/rms_May2023/`, the official
 docs at rms.readthedocs.io, and a survey of Dejian Zhao's and James
 Knight's production `.rms` scripts). The full forensic research --
 file/line citations, quantitative directive-frequency tables, and the
-doc-vs-engine reconciliation notes -- lives in the `ycga_rms_creator`
-project's `research/` directory if anything here ever needs
+doc-vs-engine reconciliation notes -- lives in the `ycga-rms-creator-kb`
+repo's `research/` directory if anything here ever needs
 re-verifying against a different RMS build/version.

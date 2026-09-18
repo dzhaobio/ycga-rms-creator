@@ -1,0 +1,23 @@
+#!/usr/bin/env rms
+
+##argv=sample
+
+##half=( R1 R2 )
+
+#### fastqc sample,half -
+##ppn=4
+
+module load FastQC
+
+cd <sample>
+
+for file in Unaligned/*_<half>_001.fastq.gz ; do
+   DIR="<sample>_<half>_fastqc"
+   rm -rf $DIR
+   mkdir -p $DIR
+   fastqc -o $DIR -t <ppn> $file
+   mv $DIR/*.html $DIR.html
+   mv $DIR/*.zip $DIR.zip
+   rm -rf $DIR
+   exit 0
+done

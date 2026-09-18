@@ -1,0 +1,74 @@
+#!/usr/bin/env rms
+
+##argv=sample
+
+##env
+# comment PERL5LIB etc in ~/.bashrc, then the perl GD error is gone
+module load R/4.2.0-foss-2020b # R/3.4.1-foss-2016b
+# module load FastQ_Screen/0.13.0-foss-2016b-Perl-5.24.1
+export FQSCN_DIR="Fastq_Screen"
+CONFFILE="/home/dz288/opt/FastQ_Screen_Genomes/fastq_screen_basic_db.conf"
+
+
+#### Fastq_Screen sample <sample>/.fastqscreen.done
+##ppn=1
+##mem=1
+module purge
+module load miniconda/22.11.1
+# conda activate /home/jfl27/project/conda_envs/fastqScreen
+conda activate /gpfs/gibbs/pi/ycga/mane/ycga_bioinfo/envs/fastqScreen
+
+cd <sample>
+
+if [ ! -e $FQSCN_DIR ]; then
+	mkdir -p $FQSCN_DIR
+fi
+
+for FQ1 in Unaligned/*_R1_001.fastq.gz ; do # only R1_001
+	#FQ2=${FQ1/R1/R2} # fastq_screen treats PE reads separately?! R1 is enough for checking contamination
+	#fastq_screen --outdir $FQSCN_DIR --subset 1000000 --conf=$CONFFILE --nohits --aligner bowtie2 $FQ1
+	echo "Processing $FQ1"
+	fastq_screen --outdir $FQSCN_DIR --conf=$CONFFILE --aligner bowtie2 $FQ1
+done
+
+cd ..
+touch <sample>/.fastqscreen.done
+
+
+#### plotFastqScreen sample <sample>/.plotFastqScreen.done
+##ppn=1
+##mem=1
+##R
+dir = Sys.getenv("FQSCN_DIR")
+
+for (file in list.files(path = paste("<sample>", dir, sep="/"), pattern = "_screen.txt$", full.names = T) ) {
+  a <- read.table(file, header = T, skip = 1, comment.char = "", fill = T, row.names = 1)
+  b <- t(a[- nrow(a), c(5, 7, 9, 11)])
+  rnam <- rownames(b)
+  rnam <- sub("^X.", "", rnam)
+  rnam <- sub(".1$", "", rnam)
+  rownames(b) <- rnam
+  sampname <- sub("_.*", "", basename(file))
+  pdf(sub(".txt$", ".pdf", file), height = 6, width = 6)
+  par( mar=c(6,3,3,1) )
+  barplot(b, legend.text = T, col = c("lightblue","blue","pink","red"), 
+          ylim = c(0,100), main = paste("Fastq_Screen Results", sampname, sep=": "), las=2 )
+  dev.off()
+}
+
+file.create("<sample>/.plotFastqScreen.done")
+
+
+#### collectFastqScreenResults all Reports/FastqScreen.tar.gz
+##ppn=1
+##mem=1
+RESULT="Reports/FastqScreen"
+
+if [ ! -e $RESULT ]; then
+	mkdir -p $RESULT
+fi
+
+rsync -a <sample,glob=True>/$FQSCN_DIR/*.html <sample,glob=True>/$FQSCN_DIR/*.pdf $RESULT
+tar -czvf ${RESULT}.tar.gz $RESULT && rm -rf $RESULT
+
+

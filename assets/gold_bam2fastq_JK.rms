@@ -1,0 +1,42 @@
+#!/usr/bin/env rms
+
+##python
+
+import sys
+import os
+
+sys.stdout.write("##sheet=EOF\n")
+sys.stdout.write("Sample Bamfile\n")
+
+for arg in sys.argv[1:]:
+    sample = os.path.basename(arg)
+    if sample.endswith(".bam"):
+        sample = sample.replace(".bam", "")
+    elif sample.endswith(".cram"):
+        sample = sample.replace(".cram", "")
+    else:
+        sys.stderr.write("Error:  File not BAM or CRAM file:  %s\n" % arg)
+        sys.exit(-1)
+
+    sys.stdout.write("%s %s\n" % (sample, arg))
+
+sys.stdout.write("EOF\n")
+
+#### bam2splitfastq bamfile -
+##io=2
+
+export YCGA_BIOINFO=/gpfs/gibbs/pi/ycga/mane/ycga_bioinfo
+
+source $YCGA_BIOINFO/setup-lang-mccleary.sh
+
+source $YCGA_BIOINFO/config/samtools-1.17
+source $YCGA_BIOINFO/config/picard-2.25.6
+
+export REF_PATH=/gpfs/gibbs/pi/ycga/mane/ycga_bioinfo/genomes/cache/%2s/%2s/%s
+
+mkdir -p <sample>/Unaligned
+
+samtools collate -r 1000000 -o <tmp>/collate.bam -@ 16 <bamfile>
+picard SamToFastq -I <tmp>/collate.bam -F <sample>/Unaligned/<sample>_R1_001.fastq -F2 <sample>/Unaligned/<sample>_R2_001.fastq -FU <sample>/Unaligned/<sample>_R2_001.fastq
+pigz -p 10 <sample>/Unaligned/<sample>_*_001.fastq
+
